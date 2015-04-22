@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <body>
+        <textarea id="chat-content" style="width:500px; height:300px;"></textarea><br/>
+        <input type="text" id="username" placeholder="Choose username"/>
+        <input type="text" id="message" placeholder="Enter chat message"/>
+        <input type="button" value="Send" onclick="sendMessage()" />
+
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+        <script>
+            var sock = new SockJS('{{ ws_url_for(endpoint) }}');
+            sock.onopen = function() {
+                console.log('open');
+            };
+            sock.onclose = function() {
+                console.log('close');
+            };
+            sock.onmessage = function(e) {
+                var content = JSON.parse(e.data);
+                $('#chat-content').val(function(i, text) {
+                    return text + 'User ' + content.username + ': ' + content.message + '\n';
+                });
+            };
+            var sendMessage = function() {
+                var message = $('#message').val();
+                var username = $('#username').val();
+                var send = {
+                    message: message,
+                    username: username
+                };
+                sock.send(JSON.stringify(send));
+            }
+        </script>
+    </body>
+</html>

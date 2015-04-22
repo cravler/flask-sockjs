@@ -1,0 +1,43 @@
+<!doctype html>
+<body>
+    <h1 id="content">Loading...</h1>
+    <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script>
+        var sock = new SockJS('{{ ws_url_for(endpoint) }}');
+        sock.onopen = function() {
+            console.log('open');
+        };
+        sock.onmessage = function(e) {
+            var data = null;
+            var message = e.data;
+            try  {
+               data = JSON.parse(message);
+            } catch(e) {}
+
+            if (data) {
+                console.log('data > ', data);
+
+                if (data.cmd === 'AUTHENTICATION_REQUIRED') {
+                    sock.send(JSON.stringify({cmd: 'AUTHENTICATE', key: 'auth-key'}))
+                } else if (data.cmd === 'AUTHENTICATION_FAILED') {
+                    var msg = 'AUTHENTICATION_FAILED: ' + data.reason;
+                    console.log(msg);
+                    document.getElementById('content').innerHTML = msg;
+                } else if (data.cmd === 'AUTHENTICATED') {
+                    var msg = 'AUTHENTICATED';
+                    console.log(msg);
+                    document.getElementById('content').innerHTML = msg;
+                    sock.send('Hello SockJS');
+                } else {
+                    //
+                }
+            } else {
+                console.log('message > ', message);
+            }
+
+        };
+        sock.onclose = function() {
+            console.log('close');
+        };
+    </script>
+</body>

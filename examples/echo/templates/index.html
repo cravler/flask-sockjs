@@ -1,0 +1,19 @@
+<!doctype html>
+<body>
+    <h1 id="content">Loading...</h1>
+    <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script>
+        var sock = new SockJS('{{ ws_url_for(endpoint) }}');
+        sock.onopen = function() {
+            console.log('open');
+            sock.send('Hello SockJS');
+        };
+        sock.onmessage = function(e) {
+            console.log('message > ', e.data);
+            document.getElementById('content').innerHTML = e.data;
+        };
+        sock.onclose = function() {
+            console.log('close');
+        };
+    </script>
+</body>

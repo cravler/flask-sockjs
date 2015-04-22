@@ -1,0 +1,12 @@
+Flask==0.10.1
+Flask-SockJS==0.1.0
+Flask-Twisted==0.1.0
+Jinja2==2.7.3
+MarkupSafe==0.23
+Twisted==15.0.0
+Werkzeug==0.10.4
+argparse==1.2.1
+itsdangerous==0.24
+txsockjs==1.2.2
+wsgiref==0.1.2
+zope.interface==4.1.2
